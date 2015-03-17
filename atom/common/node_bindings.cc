@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "atom/app/atom_main_args.h"
 #include "atom/common/native_mate_converters/file_path_converter.h"
 #include "base/command_line.h"
 #include "base/base_paths.h"
@@ -113,7 +114,7 @@ std::vector<std::string> String16VectorToStringVector(
 }
 #endif
 
-base::FilePath GetResourcesPath(base::CommandLine* command_line,
+base::FilePath GetResourcesPath(AtomCommandLine* command_line,
                                 bool is_browser) {
   base::FilePath exec_path(command_line->argv()[0]);
   PathService::Get(base::FILE_EXE, &exec_path);
@@ -167,7 +168,7 @@ void NodeBindings::Initialize() {
 
 node::Environment* NodeBindings::CreateEnvironment(
     v8::Handle<v8::Context> context) {
-  auto command_line = base::CommandLine::ForCurrentProcess();
+  auto command_line = AtomCommandLine::ForCurrentProcess();
   std::vector<std::string> args =
 #if defined(OS_WIN)
       String16VectorToStringVector(command_line->argv());
