@@ -14,14 +14,14 @@ URLRequestBufferJob::URLRequestBufferJob(net::URLRequest* request,
                                          net::NetworkDelegate* network_delegate,
                                          const std::string& mime_type,
                                          const std::string& charset,
-                                         v8::Local<v8::Object> data)
+                                         const std::string& buffer)
     : net::URLRequestSimpleJob(request, network_delegate),
       mime_type_(mime_type),
       charset_(charset),
-      buffer_data_(new base::RefCountedBytes()) {
-  auto input = reinterpret_cast<const unsigned char*>(node::Buffer::Data(data));
-  size_t length = node::Buffer::Length(data);
-  buffer_data_->data().assign(input, input + length);
+      buffer_data_(new base::RefCountedString()) {
+  auto input = buffer;
+  LOG(WARNING) << input.size();
+  buffer_data_ = base::RefCountedString::TakeString(&input);
 }
 
 int URLRequestBufferJob::GetRefCountedData(

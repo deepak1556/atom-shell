@@ -53,7 +53,7 @@ class AdapterRequestJob : public net::URLRequestJob {
                                const std::string& data);
   void CreateBufferJobAndStart(const std::string& mime_type,
                                const std::string& charset,
-                               v8::Local<v8::Object> buffer);
+                               const std::string& buffer);
   void CreateFileJobAndStart(const base::FilePath& path);
   void CreateJobFromProtocolHandlerAndStart();
 

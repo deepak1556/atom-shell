@@ -10,6 +10,7 @@
 #include "base/memory/ref_counted_memory.h"
 #include "net/url_request/url_request_simple_job.h"
 #include "atom/common/node_includes.h"
+#include "native_mate/dictionary.h"
 
 namespace atom {
 
@@ -19,7 +20,7 @@ class URLRequestBufferJob : public net::URLRequestSimpleJob {
                       net::NetworkDelegate* network_delegate,
                       const std::string& mime_type,
                       const std::string& charset,
-                      v8::Local<v8::Object> buffer);
+                      const std::string& buffer);
 
   // URLRequestSimpleJob:
   int GetRefCountedData(std::string* mime_type,
@@ -30,7 +31,7 @@ class URLRequestBufferJob : public net::URLRequestSimpleJob {
  private:
   std::string mime_type_;
   std::string charset_;
-  scoped_refptr<base::RefCountedBytes> buffer_data_;
+  scoped_refptr<base::RefCountedMemory> buffer_data_;
 
   DISALLOW_COPY_AND_ASSIGN(URLRequestBufferJob);
 };

@@ -24,7 +24,7 @@ class RequestBufferJob
 
     @mimeType = mimeType ? 'application/octet-stream'
     @encoding = encoding ? 'utf8'
-    @data = new Buffer(data)
+    @data = new Buffer(data, encoding)
 
 protocol.RequestFileJob =
 class RequestFileJob

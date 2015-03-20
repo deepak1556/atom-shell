@@ -87,15 +87,22 @@ class CustomProtocolRequestJob : public AdapterRequestJob {
                        GetWeakPtr(), mime_type, charset, data));
         return;
       } else if (name == "RequestBufferJob") {
-        std::string mime_type, encoding;
-        v8::Handle<v8::Value> buffer;
+        std::string mime_type, charset;
+        v8::Handle<v8::Value> buffer, encoding;
         dict.Get("mimeType", &mime_type);
         dict.Get("encoding", &encoding);
         dict.Get("data", &buffer);
 
+        charset = mate::V8ToString(encoding);
+        v8::Local<v8::Object> input_buffer = buffer->ToObject();
+        auto raw_input = node::Buffer::Data(input_buffer);
+        size_t length = node::Buffer::Length(input_buffer);
+        auto enc = node::ParseEncoding(isolate, encoding);
+        v8::Local<v8::Value> input = node::Encode(isolate, raw_input, length, enc);
+
         BrowserThread::PostTask(BrowserThread::IO, FROM_HERE,
             base::Bind(&AdapterRequestJob::CreateBufferJobAndStart,
-                       GetWeakPtr(), mime_type, encoding, buffer->ToObject()));
+                       GetWeakPtr(), mime_type, charset, mate::V8ToString(input)));
         return;
       } else if (name == "RequestFileJob") {
         base::FilePath path;

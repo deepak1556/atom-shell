@@ -90,7 +90,7 @@ void AdapterRequestJob::CreateStringJobAndStart(const std::string& mime_type,
 
 void AdapterRequestJob::CreateBufferJobAndStart(const std::string& mime_type,
                                                 const std::string& charset,
-                                                v8::Local<v8::Object> buffer) {
+                                                const std::string& buffer) {
   DCHECK(content::BrowserThread::CurrentlyOn(content::BrowserThread::IO));
 
   real_job_ = new URLRequestBufferJob(

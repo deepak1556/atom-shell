@@ -77,6 +77,26 @@ describe 'protocol module', ->
           assert false, 'Got error: ' + errorType + ' ' + error
           protocol.unregisterProtocol 'atom-buffer-job'
 
+    it 'returns RequestBufferJob should send encoded image data', (done) ->
+      p = path.join __dirname, 'fixtures', 'asar', 'logo.asar', 'logo.png'
+      data = require('native-image').createFromPath(p).toPng()
+      job = new protocol.RequestBufferJob(encoding: 'binary', data: data)
+      handler = remote.createFunctionWithReturnValue job
+      protocol.registerProtocol 'atom-buffer-job', handler
+
+      $.ajax
+        url: 'atom-buffer-job://fake-host'
+        success: (response) ->
+          assert.equal response.length, data.length
+          buf = new Buffer(response.length)
+          buf.write(response)
+          assert buf.equals(data)
+          protocol.unregisterProtocol 'atom-buffer-job'
+          done()
+        error: (xhr, errorType, error) ->
+          assert false, 'Got error: ' + errorType + ' ' + error
+          protocol.unregisterProtocol 'atom-buffer-job'
+
     it 'returns RequestFileJob should send file', (done) ->
       job = new protocol.RequestFileJob(__filename)
       handler = remote.createFunctionWithReturnValue job
