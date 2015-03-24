@@ -172,7 +172,7 @@ int main(int argc, const char* argv[]) {
   content::ContentMainParams params(&delegate);
   params.argc = argc;
   params.argv = argv;
-  atom::AtomCommandLine::Init(argc, argv);
+  atom::AtomCommandLine::Init(argc, const_cast<char**>(argv));
   return content::ContentMain(params);
 }
 
