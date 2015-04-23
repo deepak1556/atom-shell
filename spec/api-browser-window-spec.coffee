@@ -217,7 +217,8 @@ describe 'browser-window module', ->
   describe 'will-navigate event', ->
     it 'emits when user starts a navigation', (done) ->
       w.webContents.on 'will-navigate', (event, url) ->
-        event.preventDefault()
+        # Call produces unconsumed ipc descriptors.
+        # event.preventDefault()
         assert.equal url, 'https://www.github.com/'
         done()
       w.loadUrl "file://#{fixtures}/pages/will-navigate.html"
