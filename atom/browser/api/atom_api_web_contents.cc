@@ -199,7 +199,7 @@ WebContents::WebContents(v8::Isolate* isolate,
   // Save the preferences.
   base::DictionaryValue web_preferences;
   mate::ConvertFromV8(isolate, options.GetHandle(), &web_preferences);
-  new WebContentsPreferences(web_contents, &web_preferences);
+  WebContentsPreferences::CreateWithPreferences(web_contents, &web_preferences);
 
   web_contents->SetUserAgentOverride(GetBrowserContext()->GetUserAgent());
 

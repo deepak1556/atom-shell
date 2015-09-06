@@ -25,6 +25,10 @@ class WebContentsPreferences
   // Get the preferences of |web_contents|.
   static WebContentsPreferences* From(content::WebContents* web_contents);
 
+  // Create the preferences for |web_contents|.
+  static void CreateWithPreferences(content::WebContents* web_contents,
+                                    base::DictionaryValue* web_preferences);
+
   // Append command paramters according to |web_contents|'s preferences.
   static void AppendExtraCommandLineSwitches(
       content::WebContents* web_contents, base::CommandLine* command_line);
@@ -33,8 +37,7 @@ class WebContentsPreferences
   static void OverrideWebkitPrefs(
       content::WebContents* web_contents, content::WebPreferences* prefs);
 
-  WebContentsPreferences(content::WebContents* web_contents,
-                         base::DictionaryValue* web_preferences);
+  explicit WebContentsPreferences(base::DictionaryValue* web_preferences);
   ~WebContentsPreferences() override;
 
   // $.extend(|web_preferences_|, |new_web_preferences|).

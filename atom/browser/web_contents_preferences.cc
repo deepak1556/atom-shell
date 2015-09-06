@@ -37,10 +37,8 @@ const char* kWebRuntimeFeatures[] = {
 }  // namespace
 
 WebContentsPreferences::WebContentsPreferences(
-    content::WebContents* web_contents,
     base::DictionaryValue* web_preferences) {
   web_preferences_.Swap(web_preferences);
-  web_contents->SetUserData(kWebPreferencesKey, this);
 }
 
 WebContentsPreferences::~WebContentsPreferences() {
@@ -55,6 +53,18 @@ WebContentsPreferences* WebContentsPreferences::From(
     content::WebContents* web_contents) {
   return static_cast<WebContentsPreferences*>(
       web_contents->GetUserData(kWebPreferencesKey));
+}
+
+// static
+void WebContentsPreferences::CreateWithPreferences(
+    content::WebContents* web_contents,
+    base::DictionaryValue* web_preferences) {
+  WebContentsPreferences* preference = From(web_contents);
+  if (preference)
+    return;
+
+  preference = new WebContentsPreferences(web_preferences);
+  web_contents->SetUserData(kWebPreferencesKey, preference);
 }
 
 // static
