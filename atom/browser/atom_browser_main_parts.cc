@@ -7,6 +7,7 @@
 #include "atom/browser/api/trackable_object.h"
 #include "atom/browser/atom_browser_client.h"
 #include "atom/browser/atom_browser_context.h"
+#include "atom/browser/atom_nacl_browser_delegate.h"
 #include "atom/browser/bridge_task_runner.h"
 #include "atom/browser/browser.h"
 #include "atom/browser/javascript_environment.h"
@@ -17,11 +18,19 @@
 #include "base/command_line.h"
 #include "base/thread_task_runner_handle.h"
 #include "chrome/browser/browser_process.h"
+#include "content/public/browser/browser_thread.h"
 #include "v8/include/v8-debug.h"
 
 #if defined(USE_X11)
 #include "chrome/browser/ui/libgtk2ui/gtk2_util.h"
 #endif
+
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+#include "components/nacl/browser/nacl_browser.h"
+#include "components/nacl/browser/nacl_process_host.h"
+#endif
+
+using content::BrowserThread;
 
 namespace atom {
 
@@ -118,6 +127,12 @@ void AtomBrowserMainParts::PreMainMessageLoopRun() {
 
 #if defined(USE_X11)
   libgtk2ui::GtkInitFromCommandLine(*base::CommandLine::ForCurrentProcess());
+#endif
+
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  nacl::NaClBrowser::SetDelegate(new AtomNaClBrowserDelegate);
+  BrowserThread::PostTask(BrowserThread::IO, FROM_HERE,
+                          base::Bind(nacl::NaClProcessHost::EarlyStartup));
 #endif
 
 #if !defined(OS_MACOSX)

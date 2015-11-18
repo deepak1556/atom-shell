@@ -51,6 +51,9 @@ class AtomRendererClient : public content::ContentRendererClient,
                   bool is_initial_navigation,
                   bool is_server_redirect,
                   bool* send_referrer) override;
+  const void* CreatePPAPIInterface(
+      const std::string& interface_name) override;
+  bool IsExternalPepperPlugin(const std::string& module_name) override;
   content::BrowserPluginDelegate* CreateBrowserPluginDelegate(
       content::RenderFrame* render_frame,
       const std::string& mime_type,

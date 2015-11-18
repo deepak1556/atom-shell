@@ -55,6 +55,8 @@ class AtomBrowserClient : public brightray::BrowserClient,
       content::SiteInstance** new_instance) override;
   void AppendExtraCommandLineSwitches(base::CommandLine* command_line,
                                       int child_process_id) override;
+  content::BrowserPpapiHost* GetExternalBrowserPpapiHost(
+      int plugin_process_id) override;
   void DidCreatePpapiPlugin(content::BrowserPpapiHost* browser_host) override;
   content::QuotaPermissionContext* CreateQuotaPermissionContext() override;
   void AllowCertificateError(

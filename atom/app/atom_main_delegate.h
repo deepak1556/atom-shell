@@ -22,6 +22,10 @@ class AtomMainDelegate : public brightray::MainDelegate {
   content::ContentBrowserClient* CreateContentBrowserClient() override;
   content::ContentRendererClient* CreateContentRendererClient() override;
   content::ContentUtilityClient* CreateContentUtilityClient() override;
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  void ZygoteStarting(
+      ScopedVector<content::ZygoteForkDelegate>* delegates) override;
+#endif
 
   // brightray::MainDelegate:
   scoped_ptr<brightray::ContentClient> CreateContentClient() override;

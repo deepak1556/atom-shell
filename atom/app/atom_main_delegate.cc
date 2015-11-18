@@ -16,9 +16,13 @@
 #include "base/debug/stack_trace.h"
 #include "base/environment.h"
 #include "base/logging.h"
-#include "chrome/common/chrome_paths.h"
 #include "content/public/common/content_switches.h"
 #include "ui/base/resource/resource_bundle.h"
+
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+#include "components/nacl/common/nacl_paths.h"
+#include "components/nacl/zygote/nacl_fork_delegate_linux.h"
+#endif
 
 namespace atom {
 
@@ -80,7 +84,9 @@ bool AtomMainDelegate::BasicStartupComplete(int* exit_code) {
   if (enable_stack_dumping)
     base::debug::EnableInProcessStackDumping();
 
-  chrome::RegisterPathProvider();
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  nacl::RegisterPathProvider();
+#endif
 
   return brightray::MainDelegate::BasicStartupComplete(exit_code);
 }
@@ -136,6 +142,13 @@ content::ContentUtilityClient* AtomMainDelegate::CreateContentUtilityClient() {
 scoped_ptr<brightray::ContentClient> AtomMainDelegate::CreateContentClient() {
   return scoped_ptr<brightray::ContentClient>(new AtomContentClient).Pass();
 }
+
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+void AtomMainDelegate::ZygoteStarting(
+    ScopedVector<content::ZygoteForkDelegate>* delegates) {
+  nacl::AddNaClZygoteForkDelegates(delegates);
+}
+#endif
 
 void AtomMainDelegate::AddDataPackFromPath(
     ui::ResourceBundle* bundle, const base::FilePath& pak_dir) {

@@ -135,6 +135,8 @@
       'atom/browser/atom_browser_main_parts_posix.cc',
       'atom/browser/atom_javascript_dialog_manager.cc',
       'atom/browser/atom_javascript_dialog_manager.h',
+      'atom/browser/atom_nacl_browser_delegate.cc',
+      'atom/browser/atom_nacl_browser_delegate.h',
       'atom/browser/atom_quota_permission_context.cc',
       'atom/browser/atom_quota_permission_context.h',
       'atom/browser/atom_resource_dispatcher_host_delegate.cc',

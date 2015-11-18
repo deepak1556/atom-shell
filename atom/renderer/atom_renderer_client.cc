@@ -34,6 +34,13 @@
 #include <shlobj.h>
 #endif
 
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+#include "components/nacl/common/nacl_constants.h"
+#include "components/nacl/renderer/nacl_helper.h"
+#include "components/nacl/renderer/ppb_nacl_private.h"
+#include "components/nacl/renderer/ppb_nacl_private_impl.h"
+#endif
+
 namespace atom {
 
 namespace {
@@ -129,6 +136,9 @@ void AtomRendererClient::RenderFrameCreated(
     content::RenderFrame* render_frame) {
   new PepperHelper(render_frame);
   new AtomRenderFrameObserver(render_frame, this);
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  new nacl::NaClHelper(render_frame);
+#endif
 }
 
 void AtomRendererClient::RenderViewCreated(content::RenderView* render_view) {
@@ -191,6 +201,23 @@ bool AtomRendererClient::ShouldFork(blink::WebLocalFrame* frame,
   // we should solve this by patching Chromium in future.
   *send_referrer = true;
   return http_method == "GET";
+}
+
+const void* AtomRendererClient::CreatePPAPIInterface(
+    const std::string& interface_name) {
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  if (interface_name == PPB_NACL_PRIVATE_INTERFACE)
+    return nacl::GetNaClPrivateInterface();
+#endif
+  return NULL;
+}
+
+bool AtomRendererClient::IsExternalPepperPlugin(
+    const std::string& module_name) {
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  return module_name == nacl::kNaClPluginName;
+#endif
+  return false;
 }
 
 content::BrowserPluginDelegate* AtomRendererClient::CreateBrowserPluginDelegate(

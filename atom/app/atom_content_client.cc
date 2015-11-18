@@ -18,9 +18,23 @@
 #include "content/public/common/user_agent.h"
 #include "ppapi/shared_impl/ppapi_permissions.h"
 
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+#include "base/path_service.h"
+#include "components/nacl/common/nacl_constants.h"
+#include "components/nacl/renderer/plugin/ppapi_entrypoints.h"
+#endif
+
 namespace atom {
 
 namespace {
+
+bool GetNaClPluginPath(base::FilePath* path) {
+  base::FilePath module;
+  if (!PathService::Get(base::DIR_MODULE, &module))
+    return false;
+  *path = module.Append(nacl::kInternalNaClPluginFileName);
+  return true;
+}
 
 content::PepperPluginInfo CreatePepperFlashInfo(const base::FilePath& path,
                                                 const std::string& version) {
@@ -62,6 +76,31 @@ content::PepperPluginInfo CreatePepperFlashInfo(const base::FilePath& path,
   return plugin;
 }
 
+bool CreateNaClInfo(content::PepperPluginInfo* nacl) {
+  base::FilePath path;
+  if (!GetNaClPluginPath(&path))
+    return false;
+
+  nacl->is_internal = true;
+  nacl->path = path;
+  nacl->name = nacl::kNaClPluginName;
+  content::WebPluginMimeType nacl_mime_type(nacl::kNaClPluginMimeType,
+                                            nacl::kNaClPluginExtension,
+                                            nacl::kNaClPluginDescription);
+  nacl->mime_types.push_back(nacl_mime_type);
+  content::WebPluginMimeType pnacl_mime_type(nacl::kPnaclPluginMimeType,
+                                             nacl::kPnaclPluginExtension,
+                                             nacl::kPnaclPluginDescription);
+  nacl->mime_types.push_back(pnacl_mime_type);
+  nacl->internal_entry_points.get_interface = nacl_plugin::PPP_GetInterface;
+  nacl->internal_entry_points.initialize_module =
+      nacl_plugin::PPP_InitializeModule;
+  nacl->internal_entry_points.shutdown_module = nacl_plugin::PPP_ShutdownModule;
+  nacl->permissions = ppapi::PERMISSION_PRIVATE | ppapi::PERMISSION_DEV;
+
+  return true;
+}
+
 }  // namespace
 
 AtomContentClient::AtomContentClient() {
@@ -99,6 +138,15 @@ void AtomContentClient::AddAdditionalSchemes(
 void AtomContentClient::AddPepperPlugins(
     std::vector<content::PepperPluginInfo>* plugins) {
   auto command_line = base::CommandLine::ForCurrentProcess();
+
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  // Create NaCl plugin info.
+  content::PepperPluginInfo nacl_info;
+  if (CreateNaClInfo(&nacl_info))
+    plugins->push_back(nacl_info);
+#endif
+
+  // Create Flash plugin info.
   auto flash_path = command_line->GetSwitchValuePath(
       switches::kPpapiFlashPath);
   if (flash_path.empty())

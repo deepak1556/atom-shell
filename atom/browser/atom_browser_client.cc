@@ -40,6 +40,15 @@
 #include "ui/base/l10n/l10n_util.h"
 #include "v8/include/v8.h"
 
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+#include "components/nacl/browser/nacl_browser.h"
+#include "components/nacl/browser/nacl_host_message_filter.h"
+#include "components/nacl/browser/nacl_process_host.h"
+#include "components/nacl/common/nacl_process_type.h"
+#include "content/public/browser/browser_child_process_host.h"
+#include "content/public/browser/child_process_data.h"
+#endif
+
 namespace atom {
 
 namespace {
@@ -96,8 +105,16 @@ AtomBrowserClient::~AtomBrowserClient() {
 void AtomBrowserClient::RenderProcessWillLaunch(
     content::RenderProcessHost* host) {
   int process_id = host->GetID();
+  auto browser_context = host->GetBrowserContext();
   host->AddFilter(new printing::PrintingMessageFilter(process_id));
-  host->AddFilter(new TtsMessageFilter(process_id, host->GetBrowserContext()));
+  host->AddFilter(new TtsMessageFilter(process_id, browser_context));
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  host->AddFilter(new nacl::NaClHostMessageFilter(
+      process_id,
+      browser_context->IsOffTheRecord(),
+      browser_context->GetPath(),
+      browser_context->GetRequestContextForRenderProcess(process_id)));
+#endif
 }
 
 content::SpeechRecognitionManagerDelegate*
@@ -194,6 +211,21 @@ void AtomBrowserClient::AppendExtraCommandLineSwitches(
 
   WebContentsPreferences::AppendExtraCommandLineSwitches(
       web_contents, command_line);
+}
+
+content::BrowserPpapiHost* AtomBrowserClient::GetExternalBrowserPpapiHost(
+    int plugin_process_id) {
+#if defined(OS_LINUX) && !defined(DiSABLE_NACL)
+  content::BrowserChildProcessHostIterator iter(PROCESS_TYPE_NACL_LOADER);
+  while (!iter.Done()) {
+    nacl::NaClProcessHost* host =
+        static_cast<nacl::NaClProcessHost*>(iter.GetDelegate());
+    if (host->process() && host->process()->GetData().id == plugin_process_id)
+      return host->browser_ppapi_host();
+    ++iter;
+  }
+#endif
+  return nullptr;
 }
 
 void AtomBrowserClient::DidCreatePpapiPlugin(
