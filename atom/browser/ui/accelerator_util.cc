@@ -18,6 +18,24 @@
 
 namespace accelerator_util {
 
+std::map<std::string, ui::KeyboardCode> numpad_map = {
+  {"numpad0", ui::VKEY_NUMPAD0},
+  {"numpad1", ui::VKEY_NUMPAD1},
+  {"numpad2", ui::VKEY_NUMPAD2},
+  {"numpad3", ui::VKEY_NUMPAD3},
+  {"numpad4", ui::VKEY_NUMPAD4},
+  {"numpad5", ui::VKEY_NUMPAD5},
+  {"numpad6", ui::VKEY_NUMPAD6},
+  {"numpad7", ui::VKEY_NUMPAD7},
+  {"numpad8", ui::VKEY_NUMPAD8},
+  {"numpad9", ui::VKEY_NUMPAD9},
+  {"numpadadd", ui::VKEY_ADD},
+  {"numpaddecimal", ui::VKEY_DECIMAL},
+  {"numpaddivide", ui::VKEY_DIVIDE},
+  {"numpadmultiply", ui::VKEY_MULTIPLY},
+  {"numpadsubtract", ui::VKEY_SUBTRACT},
+};
+
 bool StringToAccelerator(const std::string& description,
                          ui::Accelerator* accelerator) {
   if (!base::IsStringASCII(description)) {
@@ -114,6 +132,9 @@ bool StringToAccelerator(const std::string& description,
         LOG(WARNING) << tokens[i] << "is not available on keyboard";
         return false;
       }
+    } else if (tokens[i].size() > 1 && tokens[i][0] == 'n') {
+      // Numpad*.
+      key = numpad_map[tokens[i]];
     } else {
       LOG(WARNING) << "Invalid accelerator token: " << tokens[i];
       return false;

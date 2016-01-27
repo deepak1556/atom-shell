@@ -31,6 +31,8 @@ The `Super` key is mapped to the `Windows` key on Windows and Linux and
 * `0` to `9`
 * `A` to `Z`
 * `F1` to `F24`
+* `Numpad0` to `Numpad9`, `NumpadAdd`, `NumpadSubtract`, `NumpadDecimal`,
+  `NumpadMultiply`, `NumpadDivide`.
 * Punctuations like `~`, `!`, `@`, `#`, `$`, etc.
 * `Plus`
 * `Space`
