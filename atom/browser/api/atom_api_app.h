@@ -12,6 +12,7 @@
 #include "atom/browser/atom_browser_client.h"
 #include "atom/browser/browser_observer.h"
 #include "atom/common/native_mate_converters/callback.h"
+#include "chrome/browser/icon_loader.h"
 #include "chrome/browser/process_singleton.h"
 #include "content/public/browser/gpu_data_manager_observer.h"
 #include "native_mate/handle.h"
@@ -42,6 +43,8 @@ class App : public AtomBrowserClient::Delegate,
             public BrowserObserver,
             public content::GpuDataManagerObserver {
  public:
+  using FileIconCallback = base::Callback<void(const gfx::Image&)>;
+
   static mate::Handle<App> Create(v8::Isolate* isolate);
 
   static void BuildPrototype(v8::Isolate* isolate,
@@ -125,6 +128,9 @@ class App : public AtomBrowserClient::Delegate,
   void ImportCertificate(const base::DictionaryValue& options,
                          const net::CompletionCallback& callback);
 #endif
+  void GetFileIcon(const base::FilePath& path,
+                   IconLoader::IconSize icon_size,
+                   const FileIconCallback& callback);
 
 #if defined(OS_WIN)
   // Get the current Jump List settings.
