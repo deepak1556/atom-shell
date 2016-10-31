@@ -43,12 +43,13 @@
     'V8_BASE': '',
     'v8_postmortem_support': 'false',
     'v8_enable_i18n_support': 'false',
-    'v8_inspector': 'false',
+    'v8_inspector': 'true',
+    'debug_devtools': 'node',
   },
   # Settings to compile node under Windows.
   'target_defaults': {
     'target_conditions': [
-      ['_target_name in ["libuv", "http_parser", "openssl", "openssl-cli", "cares", "node", "zlib"]', {
+      ['_target_name in ["libuv", "http_parser", "openssl", "openssl-cli", "cares", "node", "zlib", "v8_inspector_stl"]', {
         'msvs_disabled_warnings': [
           4003,  # not enough actual parameters for macro 'V'
           4013,  # 'free' undefined; assuming extern returning int
@@ -205,7 +206,9 @@
               '-Wl,--no-whole-archive',
             ],
           }, {
-            'libraries': [ '<@(libchromiumcontent_v8_libraries)' ],
+            'libraries': [
+              '<@(libchromiumcontent_v8_libraries)',
+            ],
           }],
         ],
       }],
@@ -227,6 +230,12 @@
               'BUILDING_UV_SHARED=1',
             ],
           }],  # OS=="win"
+        ],
+      }],
+      ['_target_name=="v8_inspector_stl"', {
+        'include_dirs': [
+          '<(libchromiumcontent_src_dir)/v8',
+          '<(libchromiumcontent_src_dir)/v8/include',
         ],
       }],
       ['_target_name.startswith("crashpad")', {

@@ -226,6 +226,8 @@
         'ENABLE_PLUGINS',
         'ENABLE_PEPPER_CDMS',
         'USE_PROPRIETARY_CODECS',
+        # We need access to inspector_agent.h.
+        'HAVE_INSPECTOR=1',
       ],
       'sources': [
         '<@(lib_sources)',

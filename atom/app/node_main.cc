@@ -53,7 +53,7 @@ int NodeMain(int argc, char *argv[]) {
         exec_argc, exec_argv);
 
     // Start our custom debugger implementation.
-    NodeDebugger node_debugger(gin_env.isolate());
+    NodeDebugger node_debugger(gin_env.isolate(), env);
     if (node_debugger.IsRunning())
       env->AssignToContext(v8::Debug::GetDebugContext());
 

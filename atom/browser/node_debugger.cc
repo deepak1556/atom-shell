@@ -6,12 +6,14 @@
 
 #include <string>
 
+#include "atom/browser/javascript_environment.h"
 #include "base/bind.h"
 #include "base/command_line.h"
 #include "base/strings/string_number_conversions.h"
 #include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
 #include "content/public/browser/browser_thread.h"
+#include "gin/public/v8_platform.h"
 #include "net/test/embedded_test_server/tcp_listen_socket.h"
 
 #include "atom/common/node_includes.h"
@@ -28,12 +30,14 @@ const char* kContentLength = "Content-Length";
 
 }  // namespace
 
-NodeDebugger::NodeDebugger(v8::Isolate* isolate)
+NodeDebugger::NodeDebugger(v8::Isolate* isolate,
+                           node::Environment* env)
     : isolate_(isolate),
       thread_("NodeDebugger"),
       content_length_(-1),
       weak_factory_(this) {
   bool use_debug_agent = false;
+  bool debug_wait_connect = false;
   int port = 5858;
 
   std::string port_str;
@@ -43,7 +47,19 @@ NodeDebugger::NodeDebugger(v8::Isolate* isolate)
     port_str = cmd->GetSwitchValueASCII("debug");
   } else if (cmd->HasSwitch("debug-brk")) {
     use_debug_agent = true;
+    debug_wait_connect = true;
     port_str = cmd->GetSwitchValueASCII("debug-brk");
+  }
+
+  if (cmd->HasSwitch("inspect")) {
+    use_debug_agent = false;
+    port_str = cmd->GetSwitchValueASCII("inspect");
+    if (!port_str.empty())
+      base::StringToInt(port_str, &port);
+    inspector_agent_.reset(new node::inspector::Agent(env));
+    inspector_agent_->Start(gin::V8Platform::Get()->default_platform(),
+                            port,
+                            debug_wait_connect);
   }
 
   if (use_debug_agent) {

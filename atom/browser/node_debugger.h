@@ -13,13 +13,15 @@
 #include "net/test/embedded_test_server/stream_listen_socket.h"
 #include "v8/include/v8-debug.h"
 #include "vendor/node/deps/uv/include/uv.h"
+#include "vendor/node/src/inspector_agent.h"
 
 namespace atom {
 
 // Add support for node's "--debug" switch.
 class NodeDebugger : public net::test_server::StreamListenSocket::Delegate {
  public:
-  explicit NodeDebugger(v8::Isolate* isolate);
+  explicit NodeDebugger(v8::Isolate* isolate,
+                        node::Environment* env);
   virtual ~NodeDebugger();
 
   bool IsRunning() const;
@@ -51,6 +53,7 @@ class NodeDebugger : public net::test_server::StreamListenSocket::Delegate {
   base::Thread thread_;
   std::unique_ptr<net::test_server::StreamListenSocket> server_;
   std::unique_ptr<net::test_server::StreamListenSocket> accepted_socket_;
+  std::unique_ptr<node::inspector::Agent> inspector_agent_;
 
   std::string buffer_;
   int content_length_;
