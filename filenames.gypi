@@ -462,6 +462,8 @@
       'chromium_src/chrome/browser/chrome_process_finder_win.cc',
       'chromium_src/chrome/browser/chrome_process_finder_win.h',
       'chromium_src/chrome/browser/icon_loader_auralinux.cc',
+      'chromium_src/chrome/browser/icon_loader_mac.mm',
+      'chromium_src/chrome/browser/icon_loader_win.cc',
       'chromium_src/chrome/browser/icon_loader.cc',
       'chromium_src/chrome/browser/icon_loader.h',
       'chromium_src/chrome/browser/icon_manager.cc',
