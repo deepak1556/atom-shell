@@ -32,6 +32,7 @@ TARGET_BINARIES = {
   'win32': [
     '{0}.exe'.format(PROJECT_NAME),  # 'electron.exe'
     'content_shell.pak',
+    'pdf_viewer_resources.pak',
     'd3dcompiler_47.dll',
     'icudtl.dat',
     'libEGL.dll',
@@ -49,6 +50,7 @@ TARGET_BINARIES = {
   'linux': [
     PROJECT_NAME,  # 'electron'
     'content_shell.pak',
+    'pdf_viewer_resources.pak',
     'icudtl.dat',
     'libffmpeg.so',
     'libnode.so',

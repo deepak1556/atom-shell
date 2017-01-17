@@ -185,6 +185,9 @@ void AtomRendererClient::RenderFrameCreated(
   // FIXME(zcbenz): Can this be moved elsewhere?
   blink::WebSecurityPolicy::registerURLSchemeAsAllowingServiceWorkers("file");
 
+  blink::WebSecurityPolicy::addOriginAccessWhitelistEntry(
+      GURL("chrome://pdf-viewer/"), "file", "", true);
+
   // Parse --secure-schemes=scheme1,scheme2
   std::vector<std::string> secure_schemes_list =
       ParseSchemesCLISwitch(switches::kSecureSchemes);
