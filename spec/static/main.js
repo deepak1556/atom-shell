@@ -329,6 +329,20 @@ ipcMain.on('navigate-with-pending-entry', (event, id) => {
   })
 })
 
+ipcMain.on('test-webcontents-navigation-observer', (event, options) => {
+  const contents = webContents.create()
+
+  contents.once(options.name, () => {
+    contents.destroy()
+  })
+
+  contents.once('destroyed', () => {
+    event.sender.send('webcontents-destroyed')
+  })
+
+  contents.loadURL(options.url)
+})
+
 // Suspend listeners until the next event and then restore them
 const suspendListeners = (emitter, eventName, callback) => {
   const listeners = emitter.listeners(eventName)
