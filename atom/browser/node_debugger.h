@@ -13,47 +13,18 @@
 #include "net/test/embedded_test_server/stream_listen_socket.h"
 #include "v8/include/v8-debug.h"
 #include "vendor/node/deps/uv/include/uv.h"
+#include "vendor/node/src/inspector_agent.h"
 
 namespace atom {
 
 // Add support for node's "--debug" switch.
-class NodeDebugger : public net::test_server::StreamListenSocket::Delegate {
+class NodeDebugger {
  public:
-  explicit NodeDebugger(v8::Isolate* isolate);
+  explicit NodeDebugger(node::Environment* env);
   virtual ~NodeDebugger();
 
-  bool IsRunning() const;
-
  private:
-  void StartServer(int port);
-  void CloseSession();
-  void OnMessage(const std::string& message);
-  void SendMessage(const std::string& message);
-  void SendConnectMessage();
-
-  static void ProcessMessageInUI(uv_async_t* handle);
-
-  static void DebugMessageHandler(const v8::Debug::Message& message);
-
-  // net::test_server::StreamListenSocket::Delegate:
-  void DidAccept(
-      net::test_server::StreamListenSocket* server,
-      std::unique_ptr<net::test_server::StreamListenSocket> socket) override;
-  void DidRead(net::test_server::StreamListenSocket* socket,
-               const char* data,
-               int len) override;
-  void DidClose(net::test_server::StreamListenSocket* socket) override;
-
-  v8::Isolate* isolate_;
-
-  uv_async_t weak_up_ui_handle_;
-
-  base::Thread thread_;
-  std::unique_ptr<net::test_server::StreamListenSocket> server_;
-  std::unique_ptr<net::test_server::StreamListenSocket> accepted_socket_;
-
-  std::string buffer_;
-  int content_length_;
+  std::unique_ptr<node::inspector::Agent> agent_;
 
   base::WeakPtrFactory<NodeDebugger> weak_factory_;
 
