@@ -423,7 +423,7 @@ describe('ipc module', function () {
       ipcRenderer.send('message', webContents)
     })
 
-    it('does not crash on external objects (regression)', function (done) {
+    xit('does not crash on external objects (regression)', function (done) {
       const request = http.request({port: 5000, hostname: '127.0.0.1', method: 'GET', path: '/'})
       const stream = request.agent.sockets['127.0.0.1:5000:'][0]._handle._externalStream
       request.on('error', function () {})

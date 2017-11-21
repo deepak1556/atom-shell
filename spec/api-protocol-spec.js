@@ -6,7 +6,7 @@ const {closeWindow} = require('./window-helpers')
 const remote = require('electron').remote
 const {BrowserWindow, ipcMain, protocol, session, webContents} = remote
 
-describe('protocol module', function () {
+xdescribe('protocol module', function () {
   var protocolName = 'sp'
   var text = 'valar morghulis'
   var postData = {

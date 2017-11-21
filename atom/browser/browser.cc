@@ -13,6 +13,7 @@
 #include "base/files/file_util.h"
 #include "base/path_service.h"
 #include "base/run_loop.h"
+#include "base/task_scheduler/post_task.h"
 #include "base/threading/thread_task_runner_handle.h"
 #include "brightray/browser/brightray_paths.h"
 
@@ -151,8 +152,11 @@ void Browser::WillFinishLaunching() {
 void Browser::DidFinishLaunching(const base::DictionaryValue& launch_info) {
   // Make sure the userData directory is created.
   base::FilePath user_data;
-  if (PathService::Get(brightray::DIR_USER_DATA, &user_data))
-    base::CreateDirectoryAndGetError(user_data, nullptr);
+  if (PathService::Get(brightray::DIR_USER_DATA, &user_data)) {
+    base::PostTaskWithTraits(
+        FROM_HERE, base::TaskTraits().MayBlock().WithPriority(base::TaskPriority::BACKGROUND),
+        base::Bind(base::IgnoreResult(&base::CreateDirectoryAndGetError), user_data, nullptr));
+  }
 
   is_ready_ = true;
   for (BrowserObserver& observer : observers_)

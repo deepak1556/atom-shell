@@ -172,6 +172,7 @@ void AtomBrowserClient::RenderProcessWillLaunch(
       = WebContentsPreferences::DisablePopups(web_contents);
   AddProcessPreferences(host->GetID(), process_prefs);
   // ensure the ProcessPreferences is removed later
+  host->RemoveObserver(this);
   host->AddObserver(this);
 }
 

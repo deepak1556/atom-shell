@@ -292,7 +292,7 @@ describe('webContents module', function () {
     w.webContents.inspectElement(10, 10)
   })
 
-  describe('startDrag({file, icon})', () => {
+  xdescribe('startDrag({file, icon})', () => {
     it('throws errors for a missing file or a missing/empty icon', () => {
       assert.throws(() => {
         w.webContents.startDrag({icon: path.join(__dirname, 'fixtures', 'assets', 'logo.png')})
@@ -338,7 +338,7 @@ describe('webContents module', function () {
     })
   })
 
-  describe('zoom api', () => {
+  xdescribe('zoom api', () => {
     const zoomScheme = remote.getGlobal('zoomScheme')
     const hostZoomMap = {
       host1: 0.3,

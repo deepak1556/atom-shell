@@ -136,7 +136,7 @@ describe('debugger module', function () {
       })
     })
 
-    it('handles invalid unicode characters in message', function (done) {
+    xit('handles invalid unicode characters in message', function (done) {
       try {
         w.webContents.debugger.attach()
       } catch (err) {

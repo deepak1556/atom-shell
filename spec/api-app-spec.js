@@ -114,7 +114,7 @@ describe('app module', function () {
     })
   })
 
-  describe('app.exit(exitCode)', function () {
+  xdescribe('app.exit(exitCode)', function () {
     var appProcess = null
 
     afterEach(function () {

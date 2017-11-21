@@ -344,7 +344,7 @@ describe('session module', function () {
       })
     })
 
-    it('can download using WebView.downloadURL', function (done) {
+    xit('can download using WebView.downloadURL', function (done) {
       downloadServer.listen(0, '127.0.0.1', function () {
         var port = downloadServer.address().port
         ipcRenderer.sendSync('set-download-option', false, false)
@@ -409,7 +409,7 @@ describe('session module', function () {
       })
     })
 
-    describe('when a save path is specified and the URL is unavailable', function () {
+    xdescribe('when a save path is specified and the URL is unavailable', function () {
       it('does not display a save dialog and reports the done state as interrupted', function (done) {
         ipcRenderer.sendSync('set-download-option', false, false)
         ipcRenderer.once('download-done', (event, state) => {
@@ -492,7 +492,7 @@ describe('session module', function () {
     })
   })
 
-  describe('ses.getBlobData(identifier, callback)', function () {
+  xdescribe('ses.getBlobData(identifier, callback)', function () {
     it('returns blob data for uuid', function (done) {
       const scheme = 'temp'
       const protocol = session.defaultSession.protocol
@@ -543,7 +543,7 @@ describe('session module', function () {
     })
   })
 
-  describe('ses.setCertificateVerifyProc(callback)', function () {
+  xdescribe('ses.setCertificateVerifyProc(callback)', function () {
     var server = null
 
     beforeEach(function (done) {

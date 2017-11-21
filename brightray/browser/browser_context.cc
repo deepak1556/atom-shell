@@ -7,6 +7,7 @@
 #include "base/files/file_path.h"
 #include "base/path_service.h"
 #include "base/strings/string_util.h"
+#include "base/task_scheduler/post_task.h"
 #include "brightray/browser/brightray_paths.h"
 #include "brightray/browser/browser_client.h"
 #include "brightray/browser/inspectable_web_contents_impl.h"
@@ -110,8 +111,9 @@ void BrowserContext::InitPrefs() {
   auto prefs_path = GetPath().Append(FILE_PATH_LITERAL("Preferences"));
   PrefServiceFactory prefs_factory;
   prefs_factory.SetUserPrefsFile(prefs_path,
-      JsonPrefStore::GetTaskRunnerForFile(
-          prefs_path, BrowserThread::GetBlockingPool()).get());
+      base::CreateSequencedTaskRunnerWithTraits(
+          base::TaskTraits().MayBlock().WithPriority(base::TaskPriority::USER_VISIBLE).WithShutdownBehavior(base::TaskShutdownBehavior::SKIP_ON_SHUTDOWN)).get());
+  prefs_factory.set_async(true);
 
   auto registry = make_scoped_refptr(new PrefRegistrySimple);
   RegisterInternalPrefs(registry.get());
@@ -150,6 +152,7 @@ net::URLRequestContextGetter* BrowserContext::CreateRequestContext(
 }
 
 net::NetworkDelegate* BrowserContext::CreateNetworkDelegate() {
+  DCHECK_CURRENTLY_ON(content::BrowserThread::IO);
   return new NetworkDelegate;
 }
 

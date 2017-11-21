@@ -191,7 +191,7 @@ describe('nativeImage module', () => {
   })
 
   describe('resize(options)', () => {
-    it('returns a resized image', () => {
+    xit('returns a resized image', () => {
       const image = nativeImage.createFromPath(path.join(__dirname, 'fixtures', 'assets', 'logo.png'))
       assert.deepEqual(image.resize({}).getSize(), {width: 538, height: 190})
       assert.deepEqual(image.resize({width: 269}).getSize(), {width: 269, height: 95})

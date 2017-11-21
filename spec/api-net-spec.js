@@ -1287,7 +1287,7 @@ describe('net module', function () {
       urlRequest.end()
     })
 
-    it('should be able to pipe a readable stream into a net request', function (done) {
+    xit('should be able to pipe a readable stream into a net request', function (done) {
       const nodeRequestUrl = '/nodeRequestUrl'
       const netRequestUrl = '/netRequestUrl'
       const bodyData = randomString(kOneMegaByte)

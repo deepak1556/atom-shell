@@ -21,6 +21,7 @@
 #include "base/threading/thread_task_runner_handle.h"
 #include "chrome/browser/browser_process.h"
 #include "content/public/browser/child_process_security_policy.h"
+#include "content/public/common/result_codes.h"
 #include "device/geolocation/geolocation_delegate.h"
 #include "device/geolocation/geolocation_provider.h"
 #include "v8/include/v8-debug.h"
@@ -122,6 +123,10 @@ void AtomBrowserMainParts::PostEarlyInitialization() {
   // of getting current message loop's task runner, which is null for now.
   bridge_task_runner_ = new BridgeTaskRunner;
   base::ThreadTaskRunnerHandle handle(bridge_task_runner_);
+}
+
+int AtomBrowserMainParts::PreCreateThreads() {
+  brightray::BrowserMainParts::PreCreateThreads();
 
   // The ProxyResolverV8 has setup a complete V8 environment, in order to
   // avoid conflicts we only initialize our V8 environment after that.
@@ -146,6 +151,8 @@ void AtomBrowserMainParts::PostEarlyInitialization() {
 
   // Wrap the uv loop with global env.
   node_bindings_->set_uv_env(env);
+
+  return content::RESULT_CODE_NORMAL_EXIT;
 }
 
 void AtomBrowserMainParts::PreMainMessageLoopRun() {

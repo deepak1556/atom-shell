@@ -167,7 +167,7 @@ net::HostResolver* URLRequestContextGetter::host_resolver() {
 }
 
 net::URLRequestContext* URLRequestContextGetter::GetURLRequestContext() {
-  DCHECK(BrowserThread::CurrentlyOn(BrowserThread::IO));
+  DCHECK_CURRENTLY_ON(BrowserThread::IO);
 
   if (!url_request_context_.get()) {
     auto& command_line = *base::CommandLine::ForCurrentProcess();

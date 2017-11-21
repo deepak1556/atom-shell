@@ -557,7 +557,7 @@ describe('BrowserWindow module', function () {
     })
   })
 
-  describe('BrowserWindow.setProgressBar(progress)', function () {
+  xdescribe('BrowserWindow.setProgressBar(progress)', function () {
     it('sets the progress', function () {
       assert.doesNotThrow(function () {
         if (process.platform === 'darwin') {
@@ -925,7 +925,7 @@ describe('BrowserWindow module', function () {
       })
     })
 
-    describe('"sandbox" option', function () {
+    xdescribe('"sandbox" option', function () {
       function waitForEvents (emitter, events, callback) {
         let count = events.length
         for (let event of events) {
@@ -1406,7 +1406,7 @@ describe('BrowserWindow module', function () {
         w.loadURL(`file://${path.join(fixtures, 'api', 'new-window.html')}`)
       })
 
-      it('retains the original web preferences when window.location is changed to a new origin', async function () {
+      xit('retains the original web preferences when window.location is changed to a new origin', async function () {
         await serveFileFromProtocol('foo', path.join(fixtures, 'api', 'window-open-location-change.html'))
         await serveFileFromProtocol('bar', path.join(fixtures, 'api', 'window-open-location-final.html'))
 
@@ -2373,7 +2373,7 @@ describe('BrowserWindow module', function () {
     })
   })
 
-  describe('dev tool extensions', function () {
+  xdescribe('dev tool extensions', function () {
     let showPanelTimeoutId
 
     const showLastDevToolsPanel = () => {
