@@ -63,6 +63,8 @@ class BrowserMainParts : public content::BrowserMainParts {
 
   std::unique_ptr<views::LayoutProvider> layout_provider_;
 
+  std::string custom_locale_;
+
   DISALLOW_COPY_AND_ASSIGN(BrowserMainParts);
 };
 

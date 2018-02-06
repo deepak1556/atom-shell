@@ -852,21 +852,6 @@ void App::SetDesktopName(const std::string& desktop_name) {
 #endif
 }
 
-void App::SetLocale(const std::string& locale) {
-  const std::string fallback_locale = g_browser_process->GetApplicationLocale();
-
-  base::ThreadRestrictions::ScopedAllowIO allow_io;
-  ResourceBundle& rb = ResourceBundle::GetSharedInstance();
-  const std::string loaded_locale = rb.ReloadLocaleResources(locale);
-
-  if (loaded_locale == locale) {
-    brightray::BrowserClient::SetApplicationLocale(locale);
-    g_browser_process->SetApplicationLocale(locale);
-  } else {
-    rb.ReloadLocaleResources(fallback_locale);
-  }
-}
-
 std::string App::GetLocale() {
   return g_browser_process->GetApplicationLocale();
 }
@@ -1259,7 +1244,6 @@ void App::BuildPrototype(
       .SetMethod("setPath", &App::SetPath)
       .SetMethod("getPath", &App::GetPath)
       .SetMethod("setDesktopName", &App::SetDesktopName)
-      .SetMethod("setLocale", &App::SetLocale)
       .SetMethod("getLocale", &App::GetLocale)
 #if defined(USE_NSS_CERTS)
       .SetMethod("importCertificate", &App::ImportCertificate)
